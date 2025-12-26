@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+echo "🟢 Inicializando base de datos elearning..."
+
+psql -v ON_ERROR_STOP=1 \
+  --username "$POSTGRES_USER" \
+  --dbname "$POSTGRES_DB" <<-EOSQL
+  SELECT 'PostgreSQL inicializado correctamente';
+EOSQL
