@@ -2,6 +2,7 @@ name: 02-postgres-mercadolibre
 
 services:
   database: 
+    container_name: mercadolibre
     image: postgres:17
     ports:
       - 5432:5432
@@ -10,8 +11,8 @@ services:
       - ./sql:/docker-entrypoint-initdb.d
 
     environment:
-      POSTGRES_DB: eLearning
-      POSTGRES_USER: br7forlife
+      POSTGRES_DB: mercadolibre
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
 
 volumes:
