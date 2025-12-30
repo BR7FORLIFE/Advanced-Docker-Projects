@@ -1,0 +1,29 @@
+name: database-orchestrator
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: postgres-scripting
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+
+  mongo:
+    image: mongo:noble
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+
+  orchestrator:
+    build: ./orchestator
+    environment:
+      PG_URL: postgresql://admin:12345@postgres:5432/postgres-scripting
+      MONGO_URL: mongodb://admin:12345@mongo:27017/postgres-scripting?authSource=admin
+    volumes:
+      - ./exports:/app/exports
+      - ./orchestrator/logs:/app/logs
+    depends_on:
+      - postgres
+      - mongo
