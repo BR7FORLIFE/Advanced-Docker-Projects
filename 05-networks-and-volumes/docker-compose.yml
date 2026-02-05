@@ -1,0 +1,33 @@
+name: networks-and-volumes
+
+services:
+  db: 
+    image: postgres:17
+    container_name: postgres-db
+    environment: 
+      POSTGRES_USER: br7forlife
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U br7forlife"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  node: 
+    build: ./node
+    container_name: node-test
+    env_file:
+      - ./node/.env
+    depends_on:
+      db: 
+        condition: service_healthy
+
+volumes:
+  pg-data: 
+
+networks:
+  app-networks:
+    
