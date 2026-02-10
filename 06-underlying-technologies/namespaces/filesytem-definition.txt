@@ -1,0 +1,103 @@
+¿Que es el **Namespace** y porque es importante en Docker?
+
+==== DEFINICION ====
+
+Es un mecanismo del kernel de linux que **Particiona globales del sistema** para que un conjunto
+de procesos vea una vista aislada de ciertos recursos ej: los contenedores de Docker
+
+=== PUNTOS CLAVE ===
+
+- No virtualiza hardware
+- No emula nada
+- Divide referencias del kernel
+
+=== QUE PROBLEMAS RESUELVE ===
+
+ANTES: 
+    - El sistema tenia una sola tabla global de procesos, red, mounts y usuarios ocasionando que todo procesos  
+    podria ver todo
+
+DESPUES: 
+    Proceso A → tabla PID #1
+    Proceso B → tabla PID #2
+
+Mismo kernel, distintas realidades
+
+=== TIPOS DE NAMESPACE ===
+
+** PID NAMESPACE **: 
+    Aisla: 
+        - PIDs
+        - Arbol de procesos
+
+    Caracteristicas: 
+        - PID 1 es especial
+        - si PID 1 muere -> muere el Namespace
+        - Namespace pueden ser anidados
+
+** NET NAMESPACE **
+    Aisla: 
+        - Interfaces
+        - Ips
+        - Routing Tables
+        - Iptables
+        - puertos
+    
+    Cada netns tiene: 
+        - loopback propio
+        - stack TCP/IP propio
+    
+    Por eso: 
+        ** 100 contenedores pueden escuchar en el puerto 80 **
+ 
+
+** MOUNT NAMESPACE **
+
+    Aisla: 
+        - Tabla de mounts
+        - Bind mounts
+        - Root filesystem " / "
+
+    Base del: 
+        - Chroot moderno
+        - overlay filesystem
+
+    ! No aisla el disco, aisla la vista del FS (filesystem)
+
+** USER NAMESPACE **
+
+    Aisla: 
+        - UID / GID
+        - capacidades
+    
+    Clave: 
+        -  root dentro != root fuera
+    
+    Esto permite: 
+        - contenedores rootless
+        - mayor seguridad
+
+** IPC NAMESPACE **
+
+    Aisla: 
+        - shared memory
+        - semaforos
+        - message queues
+    
+    Evita: 
+        - colisiones entre procesos
+
+** UTS NAMESPACE **
+
+    Aisla: 
+        - hostname
+        - domain name
+    
+    Por eso: hostaname funciona diferente en el OS como dentro de un contenedor
+
+** CGROUPS NAMESPACE **
+
+    Aisla: 
+        - visibilidad del arbol de cgroups
+
+    No controla recursos, solo lo que ves
